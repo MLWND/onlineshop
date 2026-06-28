@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}购物车 - TechMall{% endblock %}
+
+{% block content %}
+<section class="tm-page-head">
+    <div class="container">
+        <p class="tm-kicker">SHOPPING CART</p>
+        <h1>购物车</h1>
+        <p>确认商品数量与金额，然后提交订单。</p>
+    </div>
+</section>
+
+<section class="tm-section">
+    <div class="container">
+        {% if cartItems %}
+            <div class="tm-table-card table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>商品</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>小计</th>
+                            <th class="text-end">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cartItems %}
+                            <tr>
+                                <td>
+                                    <div class="tm-cart-product">
+                                        {% if item.Product.Image %}
+                                            <img src="{{ item.Product.Image.url }}" alt="{{ item.Product.ProductName }}">
+                                        {% else %}
+                                            <div class="tm-image-placeholder tiny">{{ item.Product.ProductName|slice:":2" }}</div>
+                                        {% endif %}
+                                        <span>{{ item.Product.ProductName }}</span>
+                                    </div>
+                                </td>
+                                <td>¥{{ item.Product.Price }}</td>
+                                <td>
+                                    <div class="tm-qty">
+                                        <a href="{% url 'decreaseCart' item.id %}">−</a>
+                                        <span>{{ item.Quantity }}</span>
+                                        <a href="{% url 'increaseCart' item.id %}">+</a>
+                                    </div>
+                                </td>
+                                <td>¥{{ item.subtotal_amount }}</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm tm-danger-btn" href="{% url 'deleteCart' item.id %}">删除</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tm-cart-summary">
+                <div>
+                    <span>总金额</span>
+                    <strong>¥{{ totalAmount }}</strong>
+                </div>
+                <div class="d-flex flex-wrap gap-3">
+                    <a class="btn tm-secondary-btn" href="{% url 'index' %}">继续购物</a>
+                    <a class="btn tm-primary-btn" href="{% url 'submitOrder' %}">提交订单</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="tm-empty-state">
+                <h2>购物车还是空的</h2>
+                <p>去首页挑选几件喜欢的数码产品吧。</p>
+                <a class="btn tm-primary-btn" href="{% url 'index' %}">返回首页</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

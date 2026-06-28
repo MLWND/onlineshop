@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}提交订单 - TechMall{% endblock %}
+
+{% block content %}
+<section class="tm-page-head">
+    <div class="container">
+        <p class="tm-kicker">CHECKOUT</p>
+        <h1>提交订单</h1>
+        <p>订单编号：{{ orderNumber }}</p>
+    </div>
+</section>
+
+<section class="tm-section">
+    <div class="container">
+        <form method="post" class="row g-4">
+            {% csrf_token %}
+            <div class="col-lg-8">
+                <div class="tm-table-card table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>商品</th>
+                                <th>数量</th>
+                                <th>小计</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cartItems %}
+                                <tr>
+                                    <td>{{ item.Product.ProductName }}</td>
+                                    <td>{{ item.Quantity }}</td>
+                                    <td>¥{{ item.subtotal_amount }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="tm-checkout-card">
+                    <h2>支付方式</h2>
+                    {% for method in paymentMethods %}
+                        <label class="tm-radio-row">
+                            <input type="radio" name="paymentMethod" value="{{ method }}" {% if forloop.first %}checked{% endif %}>
+                            <span>{{ method }}</span>
+                        </label>
+                    {% endfor %}
+                    <div class="tm-total-line">
+                        <span>应付金额</span>
+                        <strong>¥{{ totalAmount }}</strong>
+                    </div>
+                    <button class="btn tm-primary-btn w-100" type="submit">确认提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

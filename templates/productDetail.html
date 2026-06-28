@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.ProductName }} - TechMall{% endblock %}
+
+{% block content %}
+<section class="tm-section">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="tm-product-gallery">
+                    {% if product.Image %}
+                        <img src="{{ product.Image.url }}" alt="{{ product.ProductName }}">
+                    {% else %}
+                        <div class="tm-image-placeholder large">{{ product.ProductName|slice:":2" }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <p class="tm-kicker">{{ product.Category.CategoryName }}</p>
+                <h1 class="tm-detail-title">{{ product.ProductName }}</h1>
+                {% if product.brand %}
+                <a href="{% url 'brand_zone' product.brand.id %}" class="bz-detail-badge" style="background:{{ product.brand.color }}22;color:{{ product.brand.color }};border:1px solid {{ product.brand.color }}44;">
+                    <span class="brand-logo-wrapper" {% if product.brand.brand_name == 'Xiaomi' %}style="background: {{ product.brand.color }};"{% endif %}><img src="{{ product.brand.logo_url }}" class="brand-logo-img" alt="{{ product.brand.brand_name }}"></span> {{ product.brand.brand_name }} 品牌专区 →
+                </a>
+                {% endif %}
+                <p class="tm-detail-price">¥{{ product.Price }}</p>
+                <p class="tm-stock">库存 {{ product.Stock }} 件</p>
+                <p class="tm-detail-copy">{{ product.Description }}</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    {% if product.is_active %}
+                    <a class="btn tm-primary-btn" href="{% url 'addToCart' product.id %}">加入购物车</a>
+                    {% else %}
+                    <span class="btn tm-danger-btn">品牌已暂停销售</span>
+                    {% endif %}
+                    <a class="btn tm-secondary-btn" href="{% url 'category' product.Category.id %}">继续浏览</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Competitiveness & Specifications Section -->
+        <div class="row mt-5 g-5">
+            <!-- Competitiveness Scores -->
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h3 class="h5 mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-speedometer2 text-primary"></i> 核心竞争力评级
+                    </h3>
+                    
+                    <!-- Performance -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary fw-medium">⚡ 性能表现 (Performance)</span>
+                            <span class="fw-bold text-dark">{{ product.PerformanceScore }}/100</span>
+                        </div>
+                        <div class="progress" style="height: 10px; background-color: #e2e8f0;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ product.PerformanceScore }}%; border-radius: 50px;" aria-valuenow="{{ product.PerformanceScore }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Design -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary fw-medium">🎨 外观设计 (Design)</span>
+                            <span class="fw-bold text-dark">{{ product.DesignScore }}/100</span>
+                        </div>
+                        <div class="progress" style="height: 10px; background-color: #e2e8f0;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ product.DesignScore }}%; border-radius: 50px;" aria-valuenow="{{ product.DesignScore }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Utility -->
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary fw-medium">🛠️ 实用性/性价比 (Utility)</span>
+                            <span class="fw-bold text-dark">{{ product.UtilityScore }}/100</span>
+                        </div>
+                        <div class="progress" style="height: 10px; background-color: #e2e8f0;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ product.UtilityScore }}%; border-radius: 50px;" aria-valuenow="{{ product.UtilityScore }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Specifications -->
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h3 class="h5 mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-cpu text-info"></i> 核心规格参数
+                    </h3>
+                    <div class="table-responsive">
+                        <table class="table table-borderless align-middle mb-0">
+                            <tbody>
+                                {% if product.Specs %}
+                                    {% for key, value in product.Specs.items %}
+                                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                                        <td class="text-secondary fw-medium py-3" style="width: 35%;">{{ key }}</td>
+                                        <td class="text-dark fw-semibold py-3">{{ value }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2" class="text-muted text-center py-4">暂无规格参数数据</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

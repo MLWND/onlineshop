@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.py[cod]
+db.sqlite3-journal
+.pytest_cache/
+.coverage
+media/products/*
+!media/products/.gitkeep
+*.log
+.claude/
+.omc/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

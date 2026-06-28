@@ -1,0 +1,105 @@
+{
+  "success": [],
+  "failed": [
+    {
+      "name": "iPhone 15 Pro",
+      "filename": "iphone_15_pro",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Xiaomi 15 Ultra",
+      "filename": "xiaomi_15_ultra",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Huawei Mate 60 Pro",
+      "filename": "huawei_mate_60_pro",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "OPPO Find X7",
+      "filename": "oppo_find_x7",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "vivo X100 Pro",
+      "filename": "vivo_x100_pro",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "MacBook Air M4",
+      "filename": "macbook_air_m4",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "ThinkPad X1 Carbon",
+      "filename": "thinkpad_x1_carbon",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Xiaomi Book Pro 16",
+      "filename": "xiaomi_book_pro_16",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "ROG Zephyrus G14",
+      "filename": "rog_zephyrus_g14",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Dell XPS 13",
+      "filename": "dell_xps_13",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "AirPods Pro",
+      "filename": "airpods_pro",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Sony WH-1000XM5",
+      "filename": "sony_wh_1000xm5",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Bose QuietComfort Ultra",
+      "filename": "bose_quietcomfort_ultra",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Xiaomi Buds 5 Pro",
+      "filename": "xiaomi_buds_5_pro",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Beats Studio Buds+",
+      "filename": "beats_studio_buds_plus",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Apple Watch Series 9",
+      "filename": "apple_watch_series_9",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Xiaomi Watch S3",
+      "filename": "xiaomi_watch_s3",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Huawei Watch GT 4",
+      "filename": "huawei_watch_gt_4",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "Xiaomi Smart Speaker",
+      "filename": "xiaomi_smart_speaker",
+      "reason": "All strategies exhausted"
+    },
+    {
+      "name": "DJI Osmo Pocket 3",
+      "filename": "dji_osmo_pocket_3",
+      "reason": "All strategies exhausted"
+    }
+  ]
+}

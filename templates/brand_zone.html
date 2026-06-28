@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ brand.brand_name }} 品牌专区 | TechMall{% endblock %}
+
+{% block content %}
+<!-- 品牌横幅 -->
+<section class="bz-hero" style="--bz-color:{{ brand.color }};">
+    <div class="container">
+        <div class="bz-hero-inner">
+            <div class="bz-hero-left">
+                <span class="bz-hero-emoji"><img src="{{ brand.logo_url }}" class="brand-logo-img" alt="{{ brand.brand_name }}"></span>
+                <div>
+                    <h1 class="bz-hero-name">{{ brand.brand_name }}</h1>
+                    <p class="bz-hero-strategy">{{ brand.get_strategy_display }} · 品牌声誉 {{ brand.reputation|floatformat:0 }}</p>
+                </div>
+            </div>
+            <div class="bz-hero-stats">
+                <div class="bz-hero-stat">
+                    <span class="bz-hero-val">{{ brand.market_share|floatformat:1 }}%</span>
+                    <span class="bz-hero-label">市场份额</span>
+                </div>
+                <div class="bz-hero-stat">
+                    <span class="bz-hero-val">{{ brand.total_sales }}</span>
+                    <span class="bz-hero-label">累计销量</span>
+                </div>
+                <div class="bz-hero-stat">
+                    <span class="bz-hero-val">{{ active_products|length }}</span>
+                    <span class="bz-hero-label">在售商品</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tm-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- 在售商品 -->
+            <div class="col-12 col-lg-8">
+                <div class="tm-section-heading">
+                    <p class="tm-kicker">ON SALE</p>
+                    <h2>在售商品</h2>
+                </div>
+                <div class="row g-4">
+                    {% for product in active_products %}
+                        <div class="col-12 col-sm-6">
+                            {% include "partials/product_card.html" %}
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="tm-empty-state" style="padding:3rem;">
+                                <p>该品牌暂无在售商品</p>
+                                <p style="color:var(--sim-muted);font-size:0.9rem;">品牌Agent可能已下架全部商品，等待下一轮市场推进后重新上架</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if inactive_products %}
+                <div class="tm-section-heading mt-5">
+                    <p class="tm-kicker" style="color:var(--sim-muted);">DELISTED</p>
+                    <h2 style="color:var(--sim-muted);font-size:1.5rem;">已下架商品</h2>
+                </div>
+                <div class="row g-4">
+                    {% for product in inactive_products %}
+                        <div class="col-12 col-sm-6">
+                            <article class="tm-product-card bz-delisted-card">
+                                <div class="bz-delist-overlay">
+                                    <span>品牌暂停销售</span>
+                                </div>
+                                <a class="tm-product-image" href="{% url 'productDetail' product.id %}">
+                                    {% if product.Image %}
+                                        <img src="{{ product.Image.url }}" alt="{{ product.ProductName }}">
+                                    {% else %}
+                                        <div class="tm-image-placeholder">{{ product.ProductName|slice:":2" }}</div>
+                                    {% endif %}
+                                </a>
+                                <div class="tm-product-body">
+                                    <p class="tm-product-category">{{ product.Category.CategoryName }}</p>
+                                    <h3>{{ product.ProductName }}</h3>
+                                    <div class="tm-product-meta">
+                                        <span style="text-decoration:line-through;color:var(--sim-muted);">¥{{ product.Price }}</span>
+                                        <span style="color:var(--sim-muted);font-size:0.85rem;">已下架</span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- 品牌Agent状态侧栏 -->
+            <div class="col-12 col-lg-4">
+                <div class="bz-sidebar-card">
+                    <h3 class="bz-sidebar-title"><i class="bi bi-cpu"></i> 品牌Agent状态</h3>
+                    <div class="bz-info-grid">
+                        <div class="bz-info-row">
+                            <span class="bz-info-label">经营策略</span>
+                            <span class="bz-info-value">{{ brand.get_strategy_display }}</span>
+                        </div>
+                        <div class="bz-info-row">
+                            <span class="bz-info-label">品牌声誉</span>
+                            <span class="bz-info-value">{{ brand.reputation|floatformat:1 }}</span>
+                        </div>
+                        <div class="bz-info-row">
+                            <span class="bz-info-label">激进程度</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="background:rgba(148,163,184,0.15);border-radius:50px;width:80px;height:6px;">
+                                    <div style="width:{% widthratio brand.aggressiveness 1 100 %}%;height:100%;background:{{ brand.color }};border-radius:50px;"></div>
+                                </div>
+                                <span class="bz-info-value">{{ brand.aggressiveness|floatformat:0 }}%</span>
+                            </div>
+                        </div>
+                        <div class="bz-info-row">
+                            <span class="bz-info-label">目标日销量</span>
+                            <span class="bz-info-value">{{ brand.target_sales }} 件</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if recent_actions %}
+                <div class="bz-sidebar-card mt-3">
+                    <h3 class="bz-sidebar-title"><i class="bi bi-clock-history"></i> 最近品牌决策</h3>
+                    <div class="bz-action-list">
+                        {% for action in recent_actions %}
+                        <div class="bz-action-item">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <span class="bz-action-day">Day {{ action.day }}</span>
+                                <span class="bz-action-type 
+                                    {% if action.action_type == 'delist' %}type-danger
+                                    {% elif action.action_type == 'launch' or action.action_type == 'restock' %}type-success
+                                    {% elif action.action_type == 'flash_sale' or action.action_type == 'price_cut' %}type-warning
+                                    {% else %}type-info{% endif %}">
+                                    {{ action.get_action_type_display }}
+                                </span>
+                            </div>
+                            <p class="bz-action-desc">{{ action.description }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <a href="{% url 'simulation:brands' %}" class="btn tm-secondary-btn w-100 mt-3">
+                    <i class="bi bi-trophy"></i> 查看全部品牌竞争态势
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

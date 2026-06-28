@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}顾客中心 — Day {{ state.current_day }} | AI电商生态{% endblock %}
+
+{% block extra_css %}
+<style>
+.chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+.chart-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.customer-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.customer-table th {
+    background: var(--bg-sidebar);
+    color: var(--text-second);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 700;
+    padding: 0.75rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.customer-table th:first-child { border-radius: 10px 0 0 10px; }
+.customer-table th:last-child { border-radius: 0 10px 10px 0; }
+.customer-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-second);
+    font-size: 0.88rem;
+    transition: background 0.2s;
+}
+.customer-table tr:hover td { background: var(--primary-light); }
+.customer-table tr:last-child td { border-bottom: none; }
+.pref-badge {
+    padding: 0.2rem 0.65rem;
+    border-radius: 50px;
+    font-size: 0.75rem; font-weight: 600;
+}
+.spend-bar-wrap { display: flex; align-items: center; gap: 0.5rem; }
+.spend-bar {
+    height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--info));
+    min-width: 4px;
+    transition: width 0.6s ease;
+}
+.kpi-strip { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.kpi-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0.55rem 1.3rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: border-color 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+.kpi-pill:hover { border-color: var(--border-hover); box-shadow: var(--shadow-md); }
+.kpi-pill-val { font-family: var(--font-mono); font-weight: 700; color: var(--text-main); }
+.kpi-pill-label { color: var(--text-muted); font-size: 0.82rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sim-page">
+  <div class="container-fluid px-4">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="mb-1" style="color:var(--text-main);font-size:1.8rem;font-weight:800;">👥 顾客画像中心</h1>
+        <p style="color:var(--text-second);margin:0;">{{ total_customers }} 位虚拟顾客 · 消费行为分析</p>
+      </div>
+      <span class="day-badge"><i class="bi bi-calendar3"></i> Day {{ state.current_day }}</span>
+    </div>
+
+    <!-- KPI 概览 -->
+    <div class="kpi-strip">
+      <div class="kpi-pill">
+        <i class="bi bi-people-fill" style="color:var(--primary);"></i>
+        <span class="kpi-pill-val">{{ total_customers }}</span>
+        <span class="kpi-pill-label">虚拟顾客数</span>
+      </div>
+      <div class="kpi-pill">
+        <i class="bi bi-cash-stack" style="color:#10b981;"></i>
+        <span class="kpi-pill-val">¥{{ total_spent|floatformat:0 }}</span>
+        <span class="kpi-pill-label">总消费金额</span>
+      </div>
+      <div class="kpi-pill">
+        <i class="bi bi-bag-check" style="color:#f59e0b;"></i>
+        <span class="kpi-pill-val">{{ total_purchases }}</span>
+        <span class="kpi-pill-label">总购买次数</span>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <!-- 偏好分布 -->
+      <div class="col-12 col-md-6">
+        <div class="chart-card">
+          <div class="chart-title"><i class="bi bi-pie-chart-fill" style="color:#ec4899;"></i> 消费偏好分布</div>
+          <canvas id="prefChart" height="180"></canvas>
+        </div>
+      </div>
+      <!-- 职业分布 -->
+      <div class="col-12 col-md-6">
+        <div class="chart-card">
+          <div class="chart-title"><i class="bi bi-briefcase-fill" style="color:#f59e0b;"></i> 职业构成</div>
+          <canvas id="occChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 顾客详情表 -->
+    <div class="chart-card">
+      <div class="chart-title"><i class="bi bi-table" style="color:var(--primary);"></i> 顾客详情列表</div>
+      {% if customers %}
+      <div style="overflow-x:auto;">
+        <table class="customer-table">
+          <thead>
+            <tr>
+              <th>顾客</th>
+              <th>职业</th>
+              <th>消费偏好</th>
+              <th>月度预算</th>
+              <th>累计消费</th>
+              <th>购买次数</th>
+              <th>活跃度</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in customers %}
+            {% with max_spent=customers.0.total_spent %}
+            <tr>
+              <td>
+                <div style="font-weight:600;color:var(--text-main);">{{ c.name }}</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);">{{ c.age }}岁</div>
+              </td>
+              <td>{{ c.get_occupation_display }}</td>
+              <td>
+                <span class="pref-badge" style="background:var(--primary-light-alt);color:var(--primary);">
+                  {{ c.get_preference_display }}
+                </span>
+              </td>
+              <td>¥{{ c.budget|floatformat:0 }}</td>
+              <td>
+                <div class="spend-bar-wrap">
+                  <div class="spend-bar" style="{% if max_spent > 0 %}width:{{ c.total_spent|floatformat:0 }}px;max-width:80px;{% else %}width:4px;{% endif %}"></div>
+                  <span>¥{{ c.total_spent|floatformat:0 }}</span>
+                </div>
+              </td>
+              <td>{{ c.purchase_count }} 次</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:0.4rem;">
+                  <div style="background:rgba(16,185,129,0.15);border-radius:50px;overflow:hidden;width:60px;height:6px;">
+                    <div style="width:{% widthratio c.activity 1 100 %}%;height:100%;background:#10b981;border-radius:50px;"></div>
+                  </div>
+                  <span style="font-size:0.78rem;">{{ c.activity|floatformat:0 }}%</span>
+                </div>
+              </td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5" style="color:var(--text-muted);">
+        <i class="bi bi-person-x" style="font-size:3rem;"></i>
+        <p class="mt-2">暂无顾客数据，请先<a href="{% url 'simulation:init_data' %}">初始化数据</a></p>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const prefLabels = {{ pref_labels_json|safe }};
+const prefCounts = {{ pref_counts_json|safe }};
+const occLabels = {{ occ_labels_json|safe }};
+const occCounts = {{ occ_counts_json|safe }};
+
+const PALETTE = ['#6366f1','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4'];
+
+new Chart(document.getElementById('prefChart'), {
+  type: 'polarArea',
+  data: {
+    labels: prefLabels,
+    datasets: [{
+      data: prefCounts,
+      backgroundColor: PALETTE.map(c => c + 'bb'),
+      borderColor: PALETTE,
+      borderWidth: 1.5,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 12 } } } },
+    scales: { r: { ticks: { color: '#64748b' }, grid: { color: 'rgba(15,23,42,0.05)' } } }
+  }
+});
+
+new Chart(document.getElementById('occChart'), {
+  type: 'bar',
+  data: {
+    labels: occLabels,
+    datasets: [{
+      label: '人数',
+      data: occCounts,
+      backgroundColor: PALETTE.map(c => c + 'aa'),
+      borderColor: PALETTE,
+      borderWidth: 1.5,
+      borderRadius: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#64748b' }, grid: { display: false } },
+      y: { ticks: { color: '#64748b', stepSize: 1 }, grid: { color: 'rgba(15,23,42,0.05)' } }
+    }
+  }
+});
+</script>
+{% endblock %}

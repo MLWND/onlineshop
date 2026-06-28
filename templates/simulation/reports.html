@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% block title %}AI经营日报 — Day {{ state.current_day }} | AI电商生态{% endblock %}
+
+{% block extra_css %}
+<style>
+.report-hero {
+    background: var(--primary-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.report-hero::before {
+    content: '';
+    position: absolute; right: -40px; top: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--primary-light-alt), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.report-hero-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; }
+.report-hero-meta { font-size: 0.84rem; color: var(--text-muted); }
+.report-hero-body { margin-top: 1.2rem; font-size: 0.93rem; color: var(--text-second); line-height: 1.8; white-space: pre-line; }
+.report-stats { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.2rem; }
+.report-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    padding: 0.65rem 1.1rem;
+    text-align: center;
+    min-width: 100px;
+    transition: border-color 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+.report-stat:hover { border-color: var(--border-hover); box-shadow: var(--shadow-md); }
+.report-stat-val { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+.report-stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
+.report-list { display: flex; flex-direction: column; gap: 1rem; }
+.report-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+.report-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+}
+.report-card-header { padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; }
+.report-card-day { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem; }
+.report-card-meta { display: flex; align-items: center; gap: 0.75rem; }
+.report-card-body {
+    padding: 0.8rem 1.2rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-second);
+    line-height: 1.7;
+    white-space: pre-line;
+    border-top: 1px solid var(--border);
+}
+.ai-tag {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.2rem 0.65rem;
+    border-radius: 50px;
+    font-size: 0.72rem; font-weight: 600;
+}
+.metric-chip {
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.76rem; font-weight: 600;
+}
+.chip-sales { background: var(--primary-light-alt); color: var(--primary); }
+.chip-profit { background: #dcfce7; color: #10b981; }
+.chip-orders { background: #fef3c7; color: #f59e0b; }
+.empty-state { text-align: center; padding: 5rem 2rem; color: var(--text-muted); }
+.sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 1.2rem;
+    box-shadow: var(--shadow-sm);
+}
+.sidebar-title {
+    font-family: var(--font-display);
+    font-size: 0.9rem; font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sim-page">
+  <div class="container-fluid px-4">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="mb-1" style="color:var(--text-main);font-size:1.8rem;font-weight:800;">🤖 AI经营分析日报</h1>
+        <p style="color:var(--text-second);margin:0;">由 Agnes-2.0-Flash 驱动的智能经营分析报告</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="ai-tag">Agnes-2.0-Flash</span>
+        <span class="day-badge"><i class="bi bi-calendar3"></i> Day {{ state.current_day }}</span>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-8">
+
+        {% if latest_report %}
+        <!-- 最新日报英雄区 -->
+        <div class="report-hero mb-4">
+          <div class="report-hero-title">
+            📋 第 {{ latest_report.day }} 天经营日报 {% if latest_report.brand %}（<img src="{{ latest_report.brand.logo_url }}" class="brand-logo-img" alt="{{ latest_report.brand.brand_name }}"> {{ latest_report.brand.brand_name }}）{% else %}（全局汇总）{% endif %}
+            <span class="ai-tag ms-2" style="font-size:0.75rem;">AI生成</span>
+          </div>
+          <div class="report-hero-meta">
+            生成时间：{{ latest_report.created_at|date:"Y-m-d H:i" }} &nbsp;·&nbsp;
+            热销商品：{{ latest_report.top_product|default:"暂无" }} &nbsp;·&nbsp;
+            市场事件：{{ latest_report.active_events_summary }}
+          </div>
+          <div class="report-stats">
+            <div class="report-stat">
+              <div class="report-stat-val" style="color:var(--primary);">¥{{ latest_report.sales_amount|floatformat:0 }}</div>
+              <div class="report-stat-label">当日销售额</div>
+            </div>
+            <div class="report-stat">
+              <div class="report-stat-val" style="color:#10b981;">¥{{ latest_report.profit_amount|floatformat:0 }}</div>
+              <div class="report-stat-label">当日利润</div>
+            </div>
+            <div class="report-stat">
+              <div class="report-stat-val" style="color:#f59e0b;">{{ latest_report.order_count }}</div>
+              <div class="report-stat-label">订单数量</div>
+            </div>
+          </div>
+          <div class="report-hero-body">{{ latest_report.report_text }}</div>
+        </div>
+        {% endif %}
+
+        <!-- 历史日报列表 -->
+        {% if reports|length > 1 %}
+        <div style="font-size:0.9rem;font-weight:600;color:var(--text-muted);margin-bottom:1rem;">历史日报</div>
+        <div class="report-list">
+          {% for report in reports %}
+          {% if not forloop.first %}
+          <div class="report-card">
+            <div class="report-card-header">
+              <div class="report-card-day">
+                <i class="bi bi-file-earmark-text" style="color:var(--primary);"></i>
+                Day {{ report.day }} 经营日报 {% if report.brand %}（<img src="{{ report.brand.logo_url }}" class="brand-logo-img" alt="{{ report.brand.brand_name }}"> {{ report.brand.brand_name }}）{% else %}（全局）{% endif %}
+              </div>
+              <div class="report-card-meta">
+                <span class="metric-chip chip-sales">¥{{ report.sales_amount|floatformat:0 }}</span>
+                <span class="metric-chip chip-orders">{{ report.order_count }}单</span>
+                {% if report.is_ai_generated %}<span class="ai-tag">AI</span>{% endif %}
+              </div>
+            </div>
+            <div class="report-card-body">{{ report.report_text|truncatechars:300 }}</div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if not reports %}
+        <div class="empty-state">
+          <i class="bi bi-robot" style="font-size:4rem;opacity:0.4;"></i>
+          <p class="mt-3 fs-5">暂无AI分析报告</p>
+          <p class="mt-1">推进模拟天数后，AI分析Agent将自动生成经营日报</p>
+          <form method="post" action="{% url 'simulation:advance_day' %}" class="mt-3">
+            {% csrf_token %}
+            <button type="submit" class="advance-btn">
+              <i class="bi bi-skip-forward-fill"></i> 推进一天，生成报告
+            </button>
+          </form>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- 侧边栏 -->
+      <div class="col-12 col-lg-4">
+        <!-- 品牌筛选器 -->
+        <div class="sidebar-card mb-3">
+          <div class="sidebar-title"><i class="bi bi-funnel-fill" style="color:var(--primary);"></i> 品牌筛选</div>
+          <div class="list-group">
+            <a href="{% url 'simulation:reports' %}" class="list-group-item list-group-item-action {% if not selected_brand_id %}active{% endif %}" style="background:{% if not selected_brand_id %}var(--primary){% else %}transparent{% endif %}; color:{% if not selected_brand_id %}#fff{% else %}var(--text-main){% endif %}; border:none;">
+              🌐 全部品牌日报
+            </a>
+            {% for b in brands %}
+            <a href="{% url 'simulation:reports' %}?brand_id={{ b.id }}" class="list-group-item list-group-item-action {% if selected_brand_id == b.id %}active{% endif %}" style="background:{% if selected_brand_id == b.id %}var(--primary){% else %}transparent{% endif %}; color:{% if selected_brand_id == b.id %}#fff{% else %}var(--text-main){% endif %}; border:none; display:flex; align-items:center; gap:0.5rem;">
+              <span><img src="{{ b.logo_url }}" class="brand-logo-img" alt="{{ b.brand_name }}"></span> {{ b.brand_name }} 日报
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="sidebar-card mb-3">
+          <div class="sidebar-title"><i class="bi bi-cpu" style="color:var(--primary);"></i> AI模型说明</div>
+          <div style="font-size:0.83rem;color:var(--text-second);line-height:1.7;">
+            <p>本系统接入 <strong style="color:var(--primary);">Agnes-2.0-Flash</strong> 大语言模型，每次推进一天后，AI分析Agent将：</p>
+            <ul class="ps-3" style="margin:0;">
+              <li>汇总当日销售、利润、订单数据</li>
+              <li>结合活跃市场事件分析原因</li>
+              <li>分析各品牌竞争动态</li>
+              <li>给出明日经营策略建议</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-title"><i class="bi bi-bar-chart-steps" style="color:#10b981;"></i> 报告统计</div>
+          <div class="d-flex flex-column gap-2">
+            <div class="d-flex justify-content-between p-2" style="background:var(--primary-light);border-radius:8px;">
+              <span style="color:var(--text-second);font-size:0.85rem;">累计日报数</span>
+              <span style="font-weight:700;color:var(--text-main);">{{ total_reports }}</span>
+            </div>
+            {% if latest_report %}
+            <div class="d-flex justify-content-between p-2" style="background:#dcfce7;border-radius:8px;">
+              <span style="color:var(--text-second);font-size:0.85rem;">最新热销品</span>
+              <span style="font-weight:700;color:#10b981;font-size:0.83rem;">{{ latest_report.top_product|default:"—"|truncatechars:12 }}</span>
+            </div>
+            <div class="d-flex justify-content-between p-2" style="background:#fef3c7;border-radius:8px;">
+              <span style="color:var(--text-second);font-size:0.85rem;">最新日销售额</span>
+              <span style="font-weight:700;color:#f59e0b;">¥{{ latest_report.sales_amount|floatformat:0 }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

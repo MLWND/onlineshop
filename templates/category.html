@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.CategoryName }} - TechMall{% endblock %}
+
+{% block content %}
+<section class="tm-page-head">
+    <div class="container">
+        <p class="tm-kicker">CATEGORY</p>
+        <h1>{{ category.CategoryName }}</h1>
+        <p>{{ category.Description|default:"为你整理同类高品质数码商品。" }}</p>
+    </div>
+</section>
+
+<section class="tm-section">
+    <div class="container">
+        <div class="row g-4">
+            {% for product in products %}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    {% include "partials/product_card.html" %}
+                </div>
+            {% empty %}
+                <div class="tm-empty-state">
+                    <h2>这个分类还没有商品</h2>
+                    <a class="btn tm-primary-btn" href="{% url 'index' %}">返回首页</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

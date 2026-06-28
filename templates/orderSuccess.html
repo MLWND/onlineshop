@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}订单成功 - TechMall{% endblock %}
+
+{% block content %}
+<section class="tm-section">
+    <div class="container">
+        <div class="tm-success-panel">
+            <div class="tm-success-icon">✓</div>
+            <p class="tm-kicker">ORDER COMPLETED</p>
+            <h1>订单提交成功</h1>
+            <p>订单编号：{{ order.OrderNumber }}</p>
+            <p>支付方式：{{ order.PaymentMethod }}</p>
+        </div>
+
+        <div class="tm-table-card table-responsive mt-4">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>商品</th>
+                        <th>数量</th>
+                        <th>单价</th>
+                        <th>小计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in orderItems %}
+                        <tr>
+                            <td>{{ item.Product.ProductName }}</td>
+                            <td>{{ item.Quantity }}</td>
+                            <td>¥{{ item.Price }}</td>
+                            <td>¥{{ item.subtotal }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tm-cart-summary">
+            <div>
+                <span>订单总金额</span>
+                <strong>¥{{ order.TotalAmount }}</strong>
+            </div>
+            <a class="btn tm-primary-btn" href="{% url 'index' %}">返回首页</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

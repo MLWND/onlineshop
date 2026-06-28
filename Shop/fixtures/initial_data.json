@@ -1,0 +1,274 @@
+[
+  {
+    "model": "Shop.category",
+    "pk": 1,
+    "fields": {
+      "CategoryName": "手机",
+      "Description": "旗舰影像、性能芯片与轻薄设计。"
+    }
+  },
+  {
+    "model": "Shop.category",
+    "pk": 2,
+    "fields": {
+      "CategoryName": "电脑",
+      "Description": "轻办公、创作与高性能移动生产力。"
+    }
+  },
+  {
+    "model": "Shop.category",
+    "pk": 3,
+    "fields": {
+      "CategoryName": "耳机",
+      "Description": "降噪、空间音频与高解析聆听体验。"
+    }
+  },
+  {
+    "model": "Shop.category",
+    "pk": 4,
+    "fields": {
+      "CategoryName": "智能设备",
+      "Description": "穿戴、家居与日常健康管理。"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 1,
+    "fields": {
+      "ProductName": "iPhone 17 Pro",
+      "Category": 1,
+      "Price": "7999.00",
+      "Stock": 38,
+      "Description": "钛金属机身、A17 Pro 芯片与专业影像系统，适合追求旗舰体验的用户。",
+      "Image": "products/iPhone 17 Pro.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 2,
+    "fields": {
+      "ProductName": "Xiaomi 17 Ultra",
+      "Category": 1,
+      "Price": "6499.00",
+      "Stock": 52,
+      "Description": "旗舰影像与高亮屏幕组合，覆盖旅行、人像和日常拍摄需求。",
+      "Image": "products/Xiaomi 17 Ultra.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 3,
+    "fields": {
+      "ProductName": "Huawei Mate 80 Pro",
+      "Category": 1,
+      "Price": "6999.00",
+      "Stock": 25,
+      "Description": "精致曲面屏、长续航与稳定通信能力，兼顾商务与生活场景。",
+      "Image": "products/Huawei Mate 80 Pro.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 4,
+    "fields": {
+      "ProductName": "OPPO Find X9 Ultra",
+      "Category": 1,
+      "Price": "4599.00",
+      "Stock": 44,
+      "Description": "轻薄机身搭配出色屏幕与快充体验，适合主力机升级。",
+      "Image": "products/OPPO Find X9 Ultra.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 5,
+    "fields": {
+      "ProductName": "vivo X300 Pro",
+      "Category": 1,
+      "Price": "5499.00",
+      "Stock": 31,
+      "Description": "影像旗舰定位，夜景、人像与长焦拍摄表现均衡。",
+      "Image": "products/vivo X300 Pro.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 6,
+    "fields": {
+      "ProductName": "MacBook Air M5",
+      "Category": 2,
+      "Price": "8999.00",
+      "Stock": 20,
+      "Description": "轻薄金属机身、长续航与安静性能，适合学习和移动办公。",
+      "Image": "products/MacBook Air M5.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 7,
+    "fields": {
+      "ProductName": "ThinkPad X1 Carbon Gen 14",
+      "Category": 2,
+      "Price": "10999.00",
+      "Stock": 16,
+      "Description": "轻量商务旗舰，键盘手感优秀，适合高频文档和会议场景。",
+      "Image": "products/ThinkPad X1 Carbon Gen 14.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 8,
+    "fields": {
+      "ProductName": "Xiaomi Book Pro 16 2026",
+      "Category": 2,
+      "Price": "6999.00",
+      "Stock": 28,
+      "Description": "高分辨率大屏、金属机身与均衡性能，适合学习创作。",
+      "Image": "products/Xiaomi Book Pro 16 2026.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 9,
+    "fields": {
+      "ProductName": "ROG Zephyrus G16 (2026)",
+      "Category": 2,
+      "Price": "11999.00",
+      "Stock": 12,
+      "Description": "高性能独显轻薄本，覆盖游戏、剪辑与三维创作需求。",
+      "Image": "products/ROG Zephyrus G16 (2026).jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 10,
+    "fields": {
+      "ProductName": "Dell XPS 14 (2026)",
+      "Category": 2,
+      "Price": "8499.00",
+      "Stock": 21,
+      "Description": "窄边框屏幕和高级做工，适合便携办公与课堂展示。",
+      "Image": "products/Dell XPS 14 (2026).jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 11,
+    "fields": {
+      "ProductName": "AirPods Pro (3rd Gen)",
+      "Category": 3,
+      "Price": "1899.00",
+      "Stock": 66,
+      "Description": "主动降噪、通透模式与舒适佩戴，适合通勤和学习。",
+      "Image": "products/AirPods Pro (3rd Gen).jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 12,
+    "fields": {
+      "ProductName": "Sony WH-1000XM6",
+      "Category": 3,
+      "Price": "2499.00",
+      "Stock": 30,
+      "Description": "头戴式旗舰降噪耳机，拥有稳定降噪与细腻声音表现。",
+      "Image": "products/Sony WH-1000XM6.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 13,
+    "fields": {
+      "ProductName": "Bose QuietComfort Ultra 2",
+      "Category": 3,
+      "Price": "2999.00",
+      "Stock": 18,
+      "Description": "舒适佩戴与沉浸式音频体验，适合长时间聆听。",
+      "Image": "products/Bose QuietComfort Ultra 2.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 14,
+    "fields": {
+      "ProductName": "Xiaomi Buds 6 Pro",
+      "Category": 3,
+      "Price": "899.00",
+      "Stock": 74,
+      "Description": "轻巧真无线耳机，支持降噪与快速连接，性价比突出。",
+      "Image": "products/Xiaomi Buds 6 Pro.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 15,
+    "fields": {
+      "ProductName": "Beats Studio Pro 2026",
+      "Category": 3,
+      "Price": "1299.00",
+      "Stock": 42,
+      "Description": "清晰低频与时尚外观，适合运动、通勤和日常娱乐。",
+      "Image": "products/Beats Studio Pro 2026.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 16,
+    "fields": {
+      "ProductName": "Apple Watch Series 11",
+      "Category": 4,
+      "Price": "2999.00",
+      "Stock": 34,
+      "Description": "健康监测、运动记录与智能通知，适合日常佩戴。",
+      "Image": "products/Apple Watch Series 11.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 17,
+    "fields": {
+      "ProductName": "Xiaomi Watch S5",
+      "Category": 4,
+      "Price": "999.00",
+      "Stock": 58,
+      "Description": "长续航智能手表，支持运动模式、健康数据与消息提醒。",
+      "Image": "products/Xiaomi Watch S5.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 18,
+    "fields": {
+      "ProductName": "Huawei Watch GT 6",
+      "Category": 4,
+      "Price": "1588.00",
+      "Stock": 36,
+      "Description": "经典圆形表盘与健康管理能力，兼顾设计与功能。",
+      "Image": "products/Huawei Watch GT 6.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 19,
+    "fields": {
+      "ProductName": "Xiaomi Sound Ultra",
+      "Category": 4,
+      "Price": "399.00",
+      "Stock": 80,
+      "Description": "智能语音助手与家庭控制入口，适合宿舍和客厅场景。",
+      "Image": "products/Xiaomi Sound Ultra.jpg"
+    }
+  },
+  {
+    "model": "Shop.product",
+    "pk": 20,
+    "fields": {
+      "ProductName": "DJI Osmo Pocket 4",
+      "Category": 4,
+      "Price": "3499.00",
+      "Stock": 19,
+      "Description": "便携云台相机，适合视频记录、旅行拍摄和课程展示。",
+      "Image": "products/DJI Osmo Pocket 4.jpg"
+    }
+  }
+]

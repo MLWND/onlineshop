@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}TechMall AI电商生态模拟平台{% endblock %}
+
+{% block content %}
+<section class="tm-hero">
+    <div class="container">
+        <div class="tm-hero-panel">
+            <p class="tm-kicker">AI ECOMMERCE ECOSYSTEM · TECHMALL</p>
+            <h1>AI驱动的电商生态<br>模拟平台</h1>
+            <p class="tm-hero-copy">既是真实商城，也是市场模拟器。顾客Agent、品牌Agent、市场Agent共同构建动态电商生态，AI分析Agent实时生成经营洞察。你也可以作为真实用户购物，你的消费将影响模拟数据！</p>
+            <div class="d-flex flex-wrap gap-3">
+                <a class="btn tm-primary-btn" href="#products">浏览商品</a>
+                <a class="btn tm-secondary-btn" href="{% url 'simulation:dashboard' %}">🤖 进入AI模拟大屏</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if brand_agents %}
+<section class="tm-section" id="brands">
+    <div class="container">
+        <div class="tm-section-heading">
+            <p class="tm-kicker">BRAND ZONES</p>
+            <h2>品牌专区</h2>
+        </div>
+        <div class="row g-3">
+            {% for ba in brand_agents %}
+            <div class="col-6 col-lg-3 anim-fade-in">
+                <a class="tm-brand-zone-card" href="{% url 'brand_zone' ba.id %}" style="--bz-color:{{ ba.color }};">
+                    <div class="bz-top">
+                        <span class="bz-emoji"><img src="{{ ba.logo_url }}" class="brand-logo-img" alt="{{ ba.brand_name }}"></span>
+                        <span class="bz-name">{{ ba.brand_name }}</span>
+                    </div>
+                    <div class="bz-stats">
+                        <div class="bz-stat">
+                            <span class="bz-val">{{ ba.active_product_count }}</span>
+                            <span class="bz-label">在售商品</span>
+                        </div>
+                        <div class="bz-stat">
+                            <span class="bz-val">{{ ba.reputation|floatformat:0 }}</span>
+                            <span class="bz-label">声誉值</span>
+                        </div>
+                        <div class="bz-stat">
+                            <span class="bz-val">{{ ba.market_share|floatformat:0 }}%</span>
+                            <span class="bz-label">份额</span>
+                        </div>
+                    </div>
+                    <div class="bz-strategy">{{ ba.get_strategy_display }}</div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="tm-section tm-soft-band">
+    <div class="container">
+        <div class="tm-section-heading">
+            <p class="tm-kicker">CATEGORIES</p>
+            <h2>按分类探索</h2>
+        </div>
+        <div class="row g-3">
+            {% for category in categories %}
+                <div class="col-6 col-lg-3 anim-fade-in">
+                    <a class="tm-category-card" href="{% url 'category' category.id %}">
+                        <span>{{ category.CategoryName }}</span>
+                        <small>{{ category.Description|default:"精选数码好物" }}</small>
+                    </a>
+                </div>
+            {% empty %}
+                <p class="text-muted">暂无分类数据，请先加载测试数据。</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="tm-section" id="products">
+    <div class="container">
+        <div class="tm-section-heading">
+            <p class="tm-kicker">NEW ARRIVALS</p>
+            <h2>最新上架商品</h2>
+        </div>
+        <div class="row g-4">
+            {% for product in products %}
+                <div class="col-12 col-sm-6 col-lg-3 anim-fade-in">
+                    {% include "partials/product_card.html" %}
+                </div>
+            {% empty %}
+                <p class="text-muted">暂无商品数据，请先加载测试数据。</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

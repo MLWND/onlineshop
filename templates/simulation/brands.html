@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% block title %}品牌中心 — Day {{ state.current_day }} | AI电商生态{% endblock %}
+
+{% block extra_css %}
+<style>
+.brand-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.35s ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+}
+.brand-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-light-alt), transparent);
+}
+.brand-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+}
+.brand-header { padding: 1.5rem; display: flex; align-items: center; gap: 1rem; position: relative; }
+.brand-logo {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; flex-shrink: 0;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    transition: transform 0.3s;
+}
+.brand-card:hover .brand-logo { transform: scale(1.1); }
+.brand-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.01em; }
+.brand-strategy { font-size: 0.8rem; color: var(--text-muted); }
+.brand-badge {
+    position: absolute; top: 1rem; right: 1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem; font-weight: 700;
+}
+.brand-stats {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+.stat-item { text-align: center; }
+.stat-value { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--text-main); }
+.stat-label { font-size: 0.72rem; color: var(--text-muted); }
+.action-log { padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
+.action-item {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.83rem;
+}
+.action-item:last-child { border-bottom: none; }
+.action-day {
+    background: var(--primary-light-alt);
+    color: var(--primary);
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem; font-weight: 700;
+}
+.action-desc { color: var(--text-second); line-height: 1.4; }
+.chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+.chart-title {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.rep-bar { height: 6px; border-radius: 3px; margin-top: 0.3rem; transition: width 0.8s ease; }
+.action-icon { font-size: 1rem; }
+.brand-card.bankrupt {
+    opacity: 0.55;
+    filter: grayscale(70%) brightness(0.8);
+    position: relative;
+}
+}
+.bankrupt-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(220, 38, 38, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  font-weight: 800;
+  font-size: 1.1rem;
+  pointer-events: none;
+  z-index: 10;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sim-page">
+  <div class="container-fluid px-4">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="mb-1" style="color:var(--text-main);font-size:1.8rem;font-weight:800;">🏆 品牌竞争中心</h1>
+        <p style="color:var(--text-second);margin:0;">模拟 Apple · Xiaomi · Huawei · Lenovo 的市场博弈</p>
+      </div>
+      <span class="day-badge">
+        <i class="bi bi-calendar3"></i> Day {{ state.current_day }}
+      </span>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <!-- 市场份额饼图 -->
+      <div class="col-12 col-lg-5">
+        <div class="chart-card">
+          <div class="chart-title"><i class="bi bi-pie-chart-fill" style="color:var(--primary);"></i> 市场份额分布</div>
+          {% if brand_names_json != "[]" %}
+          <canvas id="shareChart" height="220"></canvas>
+          {% else %}
+          <div class="text-center py-5" style="color:var(--text-muted);">暂无数据，请先推进模拟</div>
+          {% endif %}
+
+          <!-- 品牌声誉对比 -->
+          <div class="mt-4">
+            <div class="chart-title" style="margin-bottom:0.75rem;"><i class="bi bi-star-fill" style="color:#fbbf24;"></i> 品牌声誉指数</div>
+            {% for brand in brands %}
+            <div class="mb-2">
+              <div class="d-flex justify-content-between" style="font-size:0.82rem;color:var(--text-second);">
+                <span><img src="{{ brand.logo_url }}" class="brand-logo-img" alt="{{ brand.brand_name }}"> {{ brand.brand_name }} {% if brand.is_bankrupt %}<span class="text-danger" style="font-size:0.75rem;font-weight:bold;">[已破产]</span>{% endif %}</span>
+                <span style="font-weight:600;color:var(--text-main);">{{ brand.reputation|floatformat:1 }}</span>
+              </div>
+              <div style="background:rgba(148,163,184,0.15);border-radius:3px;height:6px;">
+                <div class="rep-bar" style="width:{{ brand.reputation }}%;background:{{ brand.color }};"></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- 品牌卡片 -->
+      <div class="col-12 col-lg-7">
+        <div class="row g-3">
+          {% for brand in brands %}
+          <div class="col-12 col-sm-6">
+            <div class="brand-card {% if brand.is_bankrupt %}bankrupt{% endif %}">
+              {% if brand.is_bankrupt %}
+              <div class="bankrupt-overlay">
+                <i class="bi bi-exclamation-triangle-fill"></i> 破产清算中
+              </div>
+              {% endif %}
+              <div class="brand-header">
+                <div class="brand-logo" style="background:{{ brand.color }}22;"><img src="{{ brand.logo_url }}" class="brand-logo-img" alt="{{ brand.brand_name }}"></div>
+                <div>
+                  <div class="brand-name">{{ brand.brand_name }}</div>
+                  <div class="brand-strategy">{{ brand.get_strategy_display }}</div>
+                </div>
+                <span class="brand-badge" style="background:{{ brand.color }}22;color:{{ brand.color }};">
+                  #{{ forloop.counter }}
+                </span>
+              </div>
+              <div class="brand-stats">
+                <div class="stat-item">
+                  <div class="stat-value" style="color:var(--primary);">{{ brand.market_share|floatformat:1 }}%</div>
+                  <div class="stat-label">市场份额</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value" style="color:#fbbf24;">{{ brand.reputation|floatformat:1 }}</div>
+                  <div class="stat-label">品牌声誉</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">{{ brand.total_sales }}</div>
+                  <div class="stat-label">累计销量</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value text-success">¥{{ brand.funds|floatformat:0 }}</div>
+                  <div class="stat-label">流动资金</div>
+                </div>
+              </div>
+              {% if brand.recent_actions %}
+              <div class="action-log">
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;font-weight:600;">最近行动</div>
+                {% for action in brand.recent_actions %}
+                <div class="action-item">
+                  <span class="action-day">D{{ action.day }}</span>
+                  <span class="action-desc">{{ action.description|truncatechars:50 }}</span>
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12 text-center py-5" style="color:var(--text-muted);">
+            <i class="bi bi-database-x" style="font-size:3rem;"></i>
+            <p class="mt-2">暂无品牌数据，请先<a href="{% url 'simulation:init_data' %}">初始化数据</a></p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const brandNames = {{ brand_names_json|safe }};
+const brandShares = {{ brand_shares_json|safe }};
+const brandColors = {{ brand_colors_json|safe }};
+
+if (brandNames.length > 0 && document.getElementById('shareChart')) {
+  new Chart(document.getElementById('shareChart'), {
+    type: 'doughnut',
+    data: {
+      labels: brandNames,
+      datasets: [{
+        data: brandShares,
+        backgroundColor: brandColors.map(c => c + 'cc'),
+        borderColor: brandColors,
+        borderWidth: 2,
+        hoverOffset: 10,
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#64748b', padding: 16, font: { size: 13 } }
+        }
+      }
+    }
+  });
+}
+</script>
+{% endblock %}

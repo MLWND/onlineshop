@@ -1,0 +1,99 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}AI电商生态模拟平台{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg tm-navbar sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand tm-brand" href="{% url 'index' %}">
+                <span class="brand-icon">🛒</span> TechMall
+                <span class="brand-subtitle">AI生态</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="切换导航">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}"><i class="bi bi-house"></i> 商城首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}#products"><i class="bi bi-grid"></i> 全部商品</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle sim-nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-cpu"></i> AI模拟系统
+                        </a>
+                        <ul class="dropdown-menu sim-dropdown">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'simulation:dashboard' %}">
+                                    <i class="bi bi-speedometer2"></i> 市场大屏
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'simulation:brands' %}">
+                                    <i class="bi bi-trophy"></i> 品牌中心
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'simulation:customers' %}">
+                                    <i class="bi bi-people"></i> 顾客中心
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'simulation:events' %}">
+                                    <i class="bi bi-lightning"></i> 市场事件
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item sim-ai-link" href="{% url 'simulation:reports' %}">
+                                    <i class="bi bi-robot"></i> AI经营日报
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <a class="btn tm-cart-btn" href="{% url 'cart' %}">
+                        <i class="bi bi-cart3"></i> 购物车 <span class="badge bg-primary text-white">{{ cart_count|default:0 }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+        <div class="container-fluid px-4 mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} tm-alert mb-2 alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="tm-footer">
+        <div class="container-fluid px-4 d-flex flex-column flex-md-row justify-content-between gap-2">
+            <span><span class="brand-icon">🛒</span> TechMall AI电商生态模拟平台</span>
+            <span>Python课程项目 · Django 4 · Multi-Agent · Agnes-2.0-Flash</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
